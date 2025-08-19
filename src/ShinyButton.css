@@ -1,0 +1,74 @@
+.shiny-btn {
+  --bg: rgba(255,255,255,0.10);
+  --border: rgba(255,255,255,0.22);
+  --fg: #fff;
+
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--fg);
+  text-decoration: none;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--bg);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.06),
+    0 8px 30px rgba(0,0,0,0.25);
+  transition: transform .15s ease;
+}
+.shiny-btn:hover { transform: translateY(-1px); }
+
+.shiny-inner {
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  position: relative;
+  z-index: 1;
+}
+
+/* rotating conic highlight (subtle) */
+.shiny-btn::before {
+  content: "";
+  position: absolute;
+  inset: -150%;
+  background:
+    conic-gradient(from 0deg at 50% 50%,
+      transparent 0 10%,
+      rgba(255,255,255,0.45) 12%,
+      transparent 14% 100%);
+  animation: shiny-spin 5.5s linear infinite;
+  z-index: 0;
+  filter: blur(1px);
+}
+
+/* sweep on hover */
+.shiny-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg,
+    transparent 40%,
+    rgba(255,255,255,0.55) 50%,
+    transparent 60%);
+  transform: translateX(-120%);
+  transition: transform .6s ease;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+.shiny-btn:hover::after { transform: translateX(120%); }
+
+@keyframes shiny-spin { to { transform: rotate(360deg); } }
+
+/* Light theme */
+:root[data-theme="light"] .shiny-btn {
+  --bg: rgba(0,0,0,0.05);
+  --border: rgba(0,0,0,0.18);
+  --fg: #1a1a1a;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,0.05),
+    0 8px 24px rgba(0,0,0,0.08);
+}
+
+.shiny-btn::before { display: none !important; }

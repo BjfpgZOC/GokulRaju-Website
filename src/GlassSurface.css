@@ -1,0 +1,339 @@
+.glass-surface {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: opacity 0.26s ease-out;
+}
+
+.glass-surface__filter {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  z-index: -1;
+}
+
+.glass-surface__content {
+  /* keep layout neutral; our nav classes handle alignment */
+  display: block;
+  padding: 10px 12px;
+  border-radius: inherit;
+  position: relative;
+  z-index: 1;
+}
+
+.glass-surface--svg {
+  background: light-dark(hsl(0 0% 100% / var(--glass-frost, 0)),
+                         hsl(0 0% 0% / var(--glass-frost, 0)));
+  backdrop-filter: var(--filter-id, url(#glass-filter)) saturate(var(--glass-saturation, 1));
+  box-shadow:
+    0 0 2px 1px light-dark(color-mix(in oklch, black, transparent 85%),
+                           color-mix(in oklch, white, transparent 65%)) inset,
+    0 0 10px 4px light-dark(color-mix(in oklch, black, transparent 90%),
+                            color-mix(in oklch, white, transparent 85%)) inset,
+    0px 4px 16px rgba(17, 17, 26, 0.05),
+    0px 8px 24px rgba(17, 17, 26, 0.05),
+    0px 16px 56px rgba(17, 17, 26, 0.05),
+    0px 4px 16px rgba(17, 17, 26, 0.05) inset,
+    0px 8px 24px rgba(17, 17, 26, 0.05) inset,
+    0px 16px 56px rgba(17, 17, 26, 0.05) inset;
+}
+
+.glass-surface--fallback {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(12px) saturate(1.8) brightness(1.1);
+  -webkit-backdrop-filter: blur(12px) saturate(1.8) brightness(1.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow:
+    0 8px 32px 0 rgba(31, 38, 135, 0.2),
+    0 2px 16px 0 rgba(31, 38, 135, 0.1),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 0 rgba(255, 255, 255, 0.2);
+}
+
+@media (prefers-color-scheme: dark) {
+  .glass-surface--fallback {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px) saturate(1.8) brightness(1.2);
+    -webkit-backdrop-filter: blur(12px) saturate(1.8) brightness(1.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.2),
+      inset 0 -1px 0 0 rgba(255, 255, 255, 0.1);
+  }
+}
+
+@supports not (backdrop-filter: blur(10px)) {
+  .glass-surface--fallback {
+    background: rgba(255, 255, 255, 0.4);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.5),
+      inset 0 -1px 0 0 rgba(255, 255, 255, 0.3);
+  }
+  .glass-surface--fallback::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: inherit;
+    z-index: -1;
+  }
+}
+@supports not (backdrop-filter: blur(10px)) {
+  @media (prefers-color-scheme: dark) {
+    .glass-surface--fallback { background: rgba(0, 0, 0, 0.4); }
+    .glass-surface--fallback::before { background: rgba(255, 255, 255, 0.05); }
+  }
+}
+
+/* Semicircle pill */
+.nav-glass { border-radius: 9999px; }
+
+/* Brand hard-left; right cluster (tabs + icon) sits to the right.
+   The bar stays shrink-wrapped to its contents. */
+.nav-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px; /* pill padding */
+}
+
+/* Your name */
+.brand {
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+
+/* Adjustable spacer between brand and right cluster */
+.brand-gap {
+  --brand-gap: 128px;        /* change to increase/decrease empty space */
+  width: var(--brand-gap);
+  flex: 0 0 var(--brand-gap);
+  height: 1px;
+}
+
+/* Right cluster */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;                /* space between tabs group and icon */
+}
+
+/* Tabs */
+.nav-links {
+  display: flex;
+  gap: 16px;                /* space between individual tabs */
+  white-space: nowrap;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: inherit;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+  opacity: 0.92;
+  padding: 0 6px;
+}
+.nav-link:hover { opacity: 1; }
+
+/* Theme icon (no background) */
+.nav-icon {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 16px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-icon:focus { outline: none; }
+.nav-icon:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px currentColor; /* circular focus ring */
+  border-radius: 9999px;
+}
+
+/* Center the welcome text above the orb */
+.hero {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+  z-index: 10;           /* below navbar (z=20), above orb (z=0) */
+  pointer-events: none;
+  padding: 0 16px;
+}
+.hero .line { display: block; }
+
+.hero-title {
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.5px;
+  font-size: clamp(14px, 4.6vw, 28px);
+}
+
+:root {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system,
+               "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+
+html, body, #root { height: 100%; }
+html, body { margin: 0; 
+            font-family: var(--font-sans);
+}          /* << fix default margins */
+
+/* ===== ABOUT PAGE LAYOUT (center everything) ===== */
+.about-overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;             /* center the child block */
+  z-index: 10;                     /* below navbar (20) */
+  padding: 96px 24px 32px;         /* space under navbar */
+  box-sizing: border-box;
+}
+
+.about-row {
+  display: grid;
+  grid-template-columns: clamp(260px, 42vw, 420px) minmax(280px, 520px);
+  gap: 32px;
+  align-items: center;             /* vertical align inside rows */
+  justify-content: center;         /* center the columns as a group */
+  justify-items: center;           /* center each item in its cell */
+  width: min(1100px, 92vw);        /* DON'T use 100% or it hugs the left */
+  margin: 0 auto;                  /* belt + suspenders */
+  pointer-events: auto;
+}
+
+/* text block */
+.about-text { width: 100%; max-width: 520px; }
+.about-text h2 {
+  margin: 0 0 8px 0;
+  font-weight: 700;
+  font-size: clamp(18px, 2vw, 22px);
+}
+.about-text p {
+  margin: 0 0 12px 0;
+  opacity: 0.9;
+  line-height: 1.5;
+  font-size: 15px;
+}
+.about-bullets {
+  margin: 8px 0 16px 18px;
+  padding: 0;
+  opacity: 0.9;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+/* stack on small screens and stay centered */
+@media (max-width: 860px) {
+  .about-row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    width: min(560px, 92vw);
+    justify-items: center;
+  }
+}
+
+/* minor reset so the figure doesn't add extra spacing */
+.tilted-card-figure { margin: 0; }
+
+.split-parent { word-break: normal; overflow-wrap: normal; hyphens: none; }
+.split-word { display: inline-block; margin-right: var(--word-gap, 0); }
+/*.split-word:last-child { margin-right: 0; }*/
+.split-char { display: inline-block; margin-right: var(--letter-gap, 0); }
+/*.split-char:last-child { margin-right: 0; }*/
+.split-parent a { color: inherit; text-decoration: none; text-underline-offset: 2px; }
+.split-parent strong { font-weight: 700; }
+
+.split-parent .proj-title { 
+  display: block;
+  margin-bottom: 0.9em;               /* empty line gap you wanted */
+  font-size: clamp(18px, 2vw, 22px);  /* ← same as the Hello h2 */
+  font-weight: 600;                    
+}
+.split-parent .proj-desc {
+  display: block;           /* makes each span its own line (like <p>) */
+}
+.split-parent .proj-desc:not(:first-of-type) {
+  margin-top: 0.9em;
+}
+.split-parent .proj-gap{ display:block; height:0.9em; }
+
+.proj-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;          /* space between buttons */
+  margin-top: 14px;   /* space above the row */
+}
+
+.resume-frame {
+  width: 100%;
+  height: clamp(60vh, 76vh, 86vh);
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(0,0,0,0.04);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  overflow: hidden;
+}
+
+html[data-theme="dark"] .resume-frame {
+  border-color: rgba(255,255,255,0.22);
+  background: rgba(255,255,255,0.06);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.06);
+}
+
+.resume-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.site-chip{
+  position: fixed;
+  left: 14px;
+  bottom: calc(env(safe-area-inset-bottom) + 14px);
+  z-index: 40;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  backdrop-filter: blur(10px) saturate(1.4);
+  -webkit-backdrop-filter: blur(10px) saturate(1.4);
+  border: 1px solid;
+  user-select: none;
+}
+
+/* theme-aware */
+html[data-theme="dark"] .site-chip{
+  color: rgba(245,245,245,.82);
+  background: rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.16);
+  box-shadow: 0 8px 30px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.06);
+}
+html[data-theme="light"] .site-chip{
+  color: rgba(20,20,20,.8);
+  background: rgba(0,0,0,.05);
+  border-color: rgba(0,0,0,.08);
+  box-shadow: 0 8px 24px rgba(0,0,0,.10);
+}
+
