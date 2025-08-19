@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Analytics } from "@vercel/analytics/next"
 import Orb from "./Orb.jsx";
 import GlassSurface from "./GlassSurface.jsx";
 import "./Orb.css";
